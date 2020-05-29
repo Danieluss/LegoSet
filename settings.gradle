@@ -1,0 +1,2 @@
+rootProject.name='Ubiquitous_Systems2'
+include ':app'

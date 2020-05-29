@@ -1,0 +1,21 @@
+<resources>
+
+    <string name="appName">Block List</string>
+    <string name="titleActivitySettings">Settings</string>
+    <string name="settingsTitle">Settings</string>
+
+    <string name="dbPath">db_path</string>
+    <string name="defaultDbPath">use_default_db_path</string>
+    <string name="showArchive">show_archive</string>
+    <string name="legoSetUrl">lego_set_url</string>
+    <string name="_empty">__EMPTY__</string>
+    <string name="addProject">Add Project</string>
+    <string name="projectName">Project name</string>
+    <string name="legoSetCode">Lego set code</string>
+    <string name="add">Add</string>
+    <string name="projectDetails">Project Details</string>
+    <string name="archive">archive</string>
+    <string name="email">email</string>
+    <string name="save">save</string>
+
+</resources>

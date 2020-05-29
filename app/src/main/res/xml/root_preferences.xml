@@ -1,0 +1,34 @@
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory
+        app:key="basic"
+        app:title="Basic">
+
+        <EditTextPreference
+            app:key="@string/legoSetUrl"
+            app:title="Lego set base url"
+            app:defaultValue="http://fcds.cs.put.poznan.pl/MyWeb/BL/"/>
+
+        <SwitchPreferenceCompat
+            app:key="@string/showArchive"
+            app:title="Show archived"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:key="advanced"
+        app:title="Advanced">
+
+        <SwitchPreferenceCompat
+            app:key="@string/defaultDbPath"
+            app:title="Use default database file path"/>
+
+        <EditTextPreference
+            app:key="@string/dbPath"
+            app:title="Database file path"
+            app:defaultValue="@string/_empty"
+            />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>
