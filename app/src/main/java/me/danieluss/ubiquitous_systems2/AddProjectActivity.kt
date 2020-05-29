@@ -67,6 +67,9 @@ class AddProjectActivity : AppCompatActivity() {
             return
         }
 
+
+        Toast.makeText(applicationContext, "Adding project...", Toast.LENGTH_SHORT).show()
+
         val url = PreferenceManager.getDefaultSharedPreferences(this)
             .getString(resources.getString(R.string.legoSetUrl), null)
 

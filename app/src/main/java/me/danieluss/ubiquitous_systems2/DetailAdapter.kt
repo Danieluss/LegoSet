@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.graphics.BitmapFactory
 import android.graphics.Color
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,21 +13,38 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.room.withTransaction
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import me.danieluss.ubiquitous_systems2.AddProjectActivity.Companion.UNAVAILABLE_IN_DB
 import me.danieluss.ubiquitous_systems2.data.dto.ItemDetails
 import me.danieluss.ubiquitous_systems2.data.entities.InventoryItem
 import me.danieluss.ubiquitous_systems2.data.getDbHelper
 import java.io.ByteArrayInputStream
+import java.util.*
 
 
 class DetailAdapter(context: Activity, var inventoryDetails: MutableList<ItemDetails>) :
-    ArrayAdapter<String>(
+    ArrayAdapter<ItemDetails>(
         context,
         R.layout.details_list_layout,
-        inventoryDetails.map { item -> item.item.name }
+        inventoryDetails
     ) {
+
+    var inventoryDetailsFiltered= ArrayList<ItemDetails>()
 
     init {
         sort()
+        inventoryDetailsFiltered.addAll(inventoryDetails)
+    }
+
+    override fun getCount(): Int {
+        return inventoryDetailsFiltered.size
+    }
+
+    override fun getItem(position: Int): ItemDetails {
+        return inventoryDetailsFiltered[position]
+    }
+
+    override fun getItemId(position: Int): Long {
+        return position.toLong()
     }
 
     override fun getView(position: Int, view: View?, parent: ViewGroup): View {
@@ -51,10 +69,11 @@ class DetailAdapter(context: Activity, var inventoryDetails: MutableList<ItemDet
         val layout =
             rowView.findViewById<View>(R.id.constraintLayout) as ConstraintLayout
 
-        var item = inventoryDetails[position]
+        var item = getItem(position) as ItemDetails
         titleText.text = item.item.name
         descText.text = "${item.category.name} [${item.item.code}]"
-        subDescText.text = "${item.type.name} ${item.color?.name ?: "NONE"} [${item.codes?.code ?: "NONE"}]"
+        subDescText.text =
+            "${item.type.name} ${item.color?.name ?: "NONE"} [${item.codes?.code ?: "NONE"}]"
         qtyText.text = "${item.invItem.quantityInStore}/${item.invItem.quantityInSet}"
         val img = item.codes?.image
 
@@ -152,4 +171,39 @@ class DetailAdapter(context: Activity, var inventoryDetails: MutableList<ItemDet
         })
     }
 
+    override fun getFilter(): Filter {
+        return object : Filter() {
+            override fun publishResults(
+                constraint: CharSequence?,
+                results: FilterResults
+            ) {
+                inventoryDetailsFiltered = results.values as ArrayList<ItemDetails>
+                notifyDataSetChanged()
+            }
+
+            override fun performFiltering(constraint: CharSequence): FilterResults? {
+                var constraint = constraint
+                val results = FilterResults()
+                val filteredArray = ArrayList<ItemDetails>()
+
+                constraint = constraint.toString().toLowerCase(Locale.ROOT)
+                for (i in 0 until inventoryDetails.size) {
+                    val item = inventoryDetails[i]
+                    val stringChecks: MutableList<String> = listOf(
+                        item.item.code,
+                        item.type.name,
+                        item.item.name,
+                        item.category.name,
+                        item.color?.name ?: ""
+                    ).map { it.toLowerCase(Locale.ROOT) }.toMutableList()
+                    if (stringChecks.any { it.contains(constraint) }) {
+                        filteredArray.add(inventoryDetails[i])
+                    }
+                }
+                results.count = filteredArray.size
+                results.values = filteredArray
+                return results
+            }
+        }
+    }
 }

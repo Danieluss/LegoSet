@@ -6,6 +6,8 @@ import android.content.Intent
 import android.content.Intent.CATEGORY_OPENABLE
 import android.graphics.Bitmap
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -99,12 +101,11 @@ class DetailsActivity : AppCompatActivity() {
                     condition = inv.active == 1L
                     db.inventoryDao().update(inv)
                 }
-                val toast = Toast.makeText(
+                Toast.makeText(
                     applicationContext,
                     if (condition) "Project unarchived" else "Project archived",
                     Toast.LENGTH_SHORT
-                )
-                toast.show()
+                ).show()
             }
         }
 
@@ -115,6 +116,19 @@ class DetailsActivity : AppCompatActivity() {
         save.setOnClickListener {
             save()
         }
+
+        searchFilter.addTextChangedListener(object: TextWatcher{
+            override fun afterTextChanged(s: Editable?) {
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                adapter.filter.filter(s)
+            }
+
+        })
 
     }
 
@@ -234,11 +248,11 @@ class DetailsActivity : AppCompatActivity() {
             builder.setTitle("Optionally use second-hand parts")
             builder.apply {
                 setPositiveButton("yes",
-                    DialogInterface.OnClickListener { dialog, id ->
+                    DialogInterface.OnClickListener { _, _ ->
                         callback(true)
                     })
                 setNegativeButton("no",
-                    DialogInterface.OnClickListener { dialog, id ->
+                    DialogInterface.OnClickListener { _, _ ->
                         callback(false)
                     })
             }

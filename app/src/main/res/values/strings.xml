@@ -15,7 +15,8 @@
     <string name="add">Add</string>
     <string name="projectDetails">Project Details</string>
     <string name="archive">archive</string>
-    <string name="email">email</string>
+    <string name="email">cloud</string>
     <string name="save">save</string>
+    <string name="search">Search</string>
 
 </resources>

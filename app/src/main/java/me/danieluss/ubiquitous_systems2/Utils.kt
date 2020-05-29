@@ -5,6 +5,7 @@ import android.util.Log
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
+import me.danieluss.ubiquitous_systems2.data.dto.ItemDetails
 import kotlin.math.floor
 
 object Utils {
@@ -30,6 +31,41 @@ object Utils {
             hsvb[i] = interpolate(hsva[i], hsvb[i], proportion)
         }
         return Color.HSVToColor(hsvb)
+    }
+
+    fun sort(inventory: MutableList<ItemDetails>): MutableList<ItemDetails> {
+        var copy = inventory.toMutableList()
+        copy.sortWith(compareBy<ItemDetails> { x ->
+            if (x.invItem.quantityInStore / x.invItem.quantityInSet == 1)
+                1
+            else
+                -1
+        }.thenComparator { x, y ->
+            if (x.item.name == AddProjectActivity.UNAVAILABLE_IN_DB && y.item.name == AddProjectActivity.UNAVAILABLE_IN_DB) {
+                return@thenComparator 0
+            }
+            if (x.item.name == AddProjectActivity.UNAVAILABLE_IN_DB) {
+                return@thenComparator 1
+            }
+            if (y.item.name == AddProjectActivity.UNAVAILABLE_IN_DB) {
+                return@thenComparator -1
+            }
+            val xInv = x.invItem
+            val yInv = y.invItem
+            yInv.lackingParts() - xInv.lackingParts()
+        }.thenComparator { x, y ->
+            if (x.item.name == AddProjectActivity.UNAVAILABLE_IN_DB && y.item.name == AddProjectActivity.UNAVAILABLE_IN_DB) {
+                return@thenComparator 0
+            }
+            if (x.item.name == AddProjectActivity.UNAVAILABLE_IN_DB) {
+                return@thenComparator 1
+            }
+            if (y.item.name == AddProjectActivity.UNAVAILABLE_IN_DB) {
+                return@thenComparator -1
+            }
+            x.item.name.compareTo(y.item.name)
+        })
+        return copy
     }
 
 }

@@ -117,10 +117,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initSharedPreferences() {
+        PreferenceManager.setDefaultValues(this, R.xml.root_preferences, false);
         sharedPreferences =
             PreferenceManager.getDefaultSharedPreferences(this)
         sharedPreferences.registerOnSharedPreferenceChangeListener(onSharedPreferenceChange)
-
         val dbPath = sharedPreferences.getString(
             resources.getString(R.string.dbPath),
             resources.getString(R.string._empty)
